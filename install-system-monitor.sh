@@ -56,6 +56,8 @@ echo ""
 
 # 4. 赋予可执行权限
 sudo chmod +x /usr/local/bin/system-monitor.sh
+sudo visudo
+
 
 # 5. 提示用户是否添加定时任务
 echo ""
@@ -76,14 +78,9 @@ if [[ "$setup_cron" == "y" || "$setup_cron" == "Y" ]]; then
         read -p "请输入定时任务 (默认：*/5 * * * *)： " cron_time
         cron_time=${cron_time:-"*/5 * * * *"}  # 如果没有输入，默认使用 "*/5 * * * *"
         
-        # 改进的 cron 表达式验证
-        # 允许 0-59 的数字、*、/、-、, 和 空格 符号组合
-        if [[ "$cron_time" =~ ^([0-9\*\/\-\ ,\ ]+)$ ]]; then
-            set_cron_job "$cron_time"
-            break  # 成功设置定时任务后跳出循环
-        else
-            echo "❌ 无效的 cron 表达式，请重新输入！"
-        fi
+        # 跳过 cron 表达式验证，直接设置 cron 任务
+        set_cron_job "$cron_time"
+        break
     done
 else
     echo "❌ 未设置定时任务。"
