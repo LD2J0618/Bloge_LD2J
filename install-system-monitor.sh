@@ -24,12 +24,6 @@ install_nano() {
   fi
 }
 
-# 函数：设置定时任务
-set_cron_job() {
-  echo "🕒 设置定时任务为：$1"
-  (crontab -l 2>/dev/null; echo "$1 /usr/local/bin/system-monitor.sh") | crontab -
-  echo "✅ 定时任务已设置为: $1"
-}
 
 # 1. 检查并安装 git、curl 和 nano
 install_git
@@ -78,9 +72,9 @@ if [[ "$setup_cron" == "y" || "$setup_cron" == "Y" ]]; then
         
         # 改进的 cron 表达式验证（较为宽松）
         # 允许 0-59 的数字、*、/、- 等符号
-        if [[ "$cron_time" =~ ^([0-9\*/\-\, ]+)$ ]]; then
+        if [[ "$cron_time" =~ ^([0-9\*/\-\ ,]+)$ ]]; then
             set_cron_job "$cron_time"
-            break
+            break  # 成功设置定时任务后跳出循环
         else
             echo "❌ 无效的 cron 表达式，请重新输入！"
         fi
@@ -89,10 +83,18 @@ else
     echo "❌ 未设置定时任务。"
 fi
 
+
 # 6. 自动打开编辑器，允许用户修改文件
 echo ""
 echo "📝 正在打开 nano 编辑器..."
 sudo nano /usr/local/bin/system-monitor.sh
+
+# 函数：设置定时任务
+set_cron_job() {
+  echo "🕒 设置定时任务为：$1"
+  (crontab -l 2>/dev/null; echo "$1 /usr/local/bin/system-monitor.sh") | crontab -
+  echo "✅ 定时任务已设置为: $1"
+}
 
 # 7. 提示用户验证是否能收到通知
 sudo chmod +x /usr/local/bin/system-monitor.sh
