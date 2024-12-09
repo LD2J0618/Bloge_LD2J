@@ -65,7 +65,7 @@ echo "⚙️ 默认设置定时任务为每 5 分钟执行一次。"
 echo ""
 
 # 询问用户是否设置定时任务
-read -p "是否需要设置定时任务 (y/n)? " setup_cron
+read -p "是否需要设置定时任务,输入n则默认每五分钟检测一次 (y/n)? " setup_cron
 if [[ "$setup_cron" == "y" || "$setup_cron" == "Y" ]]; then
     # 如果选择设置定时任务，询问时间间隔
     while true; do
