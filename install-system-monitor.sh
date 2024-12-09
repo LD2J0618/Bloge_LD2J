@@ -95,6 +95,8 @@ echo "📝 正在打开 nano 编辑器..."
 sudo nano /usr/local/bin/system-monitor.sh
 
 # 7. 提示用户验证是否能收到通知
+sudo chmod +x /usr/local/bin/system-monitor.sh
+sudo /usr/local/bin/system-monitor.sh
 echo ""
 echo "🎯 检查并验证系统是否能正常发送通知。"
 echo "📬 Test: 检查 Bark 是否收到通知..."
