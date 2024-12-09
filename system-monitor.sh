@@ -44,4 +44,15 @@ if [ -n "$SSH_CONNECTION" ]; then
     encoded_ssh_message=$(echo "$ssh_message" | jq -sRr @uri)
     curl -s "https://api.day.app/$BARK_KEY/$encoded_ssh_message?icon=$icon_url&isCritical=1" &>/dev/null
     echo "SSH 登录提醒已发送"
+else
+    # 如果没有通过 SSH 登录（本地或其他方式登录）
+    last_ssh_login=$(sudo last -i | grep -m 1 'ssh' | head -n 1)
+    if [ -n "$last_ssh_login" ]; then
+        ssh_ip=$(echo "$last_ssh_login" | awk '{print $3}')
+        user_name=$(echo "$last_ssh_login" | awk '{print $1}')
+        ssh_message="【$hostname】SSH 登录警告: 用户 $user_name 从 IP $ssh_ip 登录"
+        encoded_ssh_message=$(echo "$ssh_message" | jq -sRr @uri)
+        curl -s "https://api.day.app/$BARK_KEY/$encoded_ssh_message?icon=$icon_url&isCritical=1" &>/dev/null
+        echo "SSH 登录提醒已发送（通过 `last` 获取）"
+    fi
 fi
