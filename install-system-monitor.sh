@@ -24,6 +24,13 @@ install_nano() {
   fi
 }
 
+# 函数：设置定时任务
+set_cron_job() {
+  echo "🕒 设置定时任务为：$1"
+  (crontab -l 2>/dev/null; echo "$1 /usr/local/bin/system-monitor.sh") | crontab -
+  echo "✅ 定时任务已设置为: $1"
+}
+
 # 1. 检查并安装 git、curl 和 nano
 install_git
 install_curl
@@ -50,13 +57,6 @@ echo ""
 # 4. 赋予可执行权限
 sudo chmod +x /usr/local/bin/system-monitor.sh
 
-# 函数：设置定时任务
-set_cron_job() {
-  echo "🕒 设置定时任务为：$1"
-  (crontab -l 2>/dev/null; echo "$1 /usr/local/bin/system-monitor.sh") | crontab -
-  echo "✅ 定时任务已设置为: $1"
-}
-
 # 5. 提示用户是否添加定时任务
 echo ""
 echo "✅ system-monitor.sh 脚本已成功下载并保存到 /usr/local/bin/"
@@ -76,8 +76,9 @@ if [[ "$setup_cron" == "y" || "$setup_cron" == "Y" ]]; then
         read -p "请输入定时任务 (默认：*/5 * * * *)： " cron_time
         cron_time=${cron_time:-"*/5 * * * *"}  # 如果没有输入，默认使用 "*/5 * * * *"
         
-        # 验证 cron 表达式格式（简化验证，实际生产环境需要更严格验证）
-        if [[ "$cron_time" =~ ^[0-9\*/\-\*\ ]+$ ]]; then
+        # 改进的 cron 表达式验证（较为宽松）
+        # 允许 0-59 的数字、*、/、- 等符号
+        if [[ "$cron_time" =~ ^([0-9\*/\-\ ]+)$ ]]; then
             set_cron_job "$cron_time"
             break
         else
