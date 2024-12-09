@@ -78,7 +78,7 @@ if [[ "$setup_cron" == "y" || "$setup_cron" == "Y" ]]; then
         
         # 改进的 cron 表达式验证（较为宽松）
         # 允许 0-59 的数字、*、/、- 等符号
-        if [[ "$cron_time" =~ ^([0-9\*/\-\ ]+)$ ]]; then
+        if [[ "$cron_time" =~ ^([0-9\*/\-\, ]+)$ ]]; then
             set_cron_job "$cron_time"
             break
         else
